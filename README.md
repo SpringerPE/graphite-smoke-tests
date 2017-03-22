@@ -7,7 +7,8 @@ go get github.com/SpringerPE/graphite-smoke-tests
 
 ## How to run these tests
 
-Create a configuration file, let's suppose `./smoke_tests_config.json` with the following contents:
+Copy and modify the example configuration file under `./examples/test.config.json` or 
+create a new one with the following contents:
 
 ```
 {
