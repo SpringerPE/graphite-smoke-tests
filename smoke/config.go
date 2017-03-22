@@ -11,7 +11,6 @@ type Config struct {
 	ApiPort int `json: "api_port"`
 	Host	string `json: "host"`
 	Port      int `json: "port"`
-	Proto	string `json: "proto"`
 	TcpEnabled bool `json: "enable_tcp"`
 	UdpEnabled bool `json: "enable_udp"`
 }
@@ -39,7 +38,6 @@ func newDefaultConfig() *Config {
 		ApiPort: 80,
 		Host: "",
 		Port: 2003,
-		Proto: "tcp",
 		TcpEnabled: true,
 		UdpEnabled: false,
 	}
