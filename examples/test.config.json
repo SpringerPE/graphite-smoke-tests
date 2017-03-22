@@ -1,0 +1,8 @@
+{
+	"api": "graphite-api-dev.tools.pe.springer-sbm.com",
+	"api_port": 80,
+	"host": "graphite-503net.tools.pe.springer-sbm.com",
+	"port": 80,
+	"enable_tcp": true,
+	"enable_udp": true
+}
