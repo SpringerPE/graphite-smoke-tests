@@ -1,0 +1,6 @@
+package: github.com/SpringerPE/graphite-smoke-tests
+import:
+- package: github.com/marpaia/graphite-golang
+testImport:
+- package: github.com/onsi/ginkgo
+- package: github.com/onsi/gomega
