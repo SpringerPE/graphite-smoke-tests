@@ -41,7 +41,6 @@ func (d *Datapoint) Value() string {
 
 func NewGraphiteClient(host string, port int, apiHost string, protocol string, prefix string) (*GraphiteClient, error) {
 	var client *GraphiteClient
-
 	g, err :=  graphite.GraphiteFactory(protocol, host, port, prefix)
 	if err != nil {
 		return nil, err
@@ -56,10 +55,6 @@ func (client *GraphiteClient) SendMetricToGraphite(name string, value string) er
 	log.Printf("Original graphite client: %#v", client.Graphite)
 
 	err := client.SimpleSend(name, value)
-	if err != nil {
-		return err
-	}
-	err = client.Graphite.Disconnect()
 	return err
 }
 
@@ -76,7 +71,7 @@ func (client *GraphiteClient) GetMetricFromGraphite(name string, from int) (ApiR
 	q := req.URL.Query()
 	q.Add("target", strings.Join([]string{client.Prefix, name}, "."))
 	q.Add("format", "json")
-	q.Add("from", fmt.Sprintf("-%dmin", from))
+	q.Add("from", fmt.Sprintf("-%ds", from))
 	req.URL.RawQuery = q.Encode()
 	resp, err := httpClient.Do(req)
 	defer resp.Body.Close()

@@ -27,17 +27,27 @@ var _ = Describe("Graphite:", func() {
 	    		var err error
 	    		protocol := "tcp"
 
-			gclient, err = smoke.NewGraphiteClient(
-				testConfig.Host, 
-				testConfig.Port,
-				testConfig.Api,
-				protocol,
-				testPrefix,
-			)
+			BeforeEach( func() {
+				gclient, err = smoke.NewGraphiteClient(
+					testConfig.Host,
+					testConfig.Port,
+					testConfig.Api,
+					protocol,
+					testPrefix,
+				)
 
-			if err != nil {
-				Fail(err.Error())
-			}
+				if err != nil {
+					Fail(err.Error())
+				}
+			})
+
+			AfterEach(func() {
+				err = gclient.Graphite.Disconnect()
+				if err != nil {
+					Fail(err.Error())
+				}
+			})
+
 
 			It("can be sent over tcp and retrieved", func() {
 				runSendAndRetrieveTest(gclient, "tcp.metric")
@@ -52,17 +62,26 @@ var _ = Describe("Graphite:", func() {
 	    		var err error
 	    		protocol := "udp"
 
-			gclient, err = smoke.NewGraphiteClient(
-				testConfig.Host, 
-				testConfig.Port,
-				testConfig.Api,
-				protocol,
-				testPrefix,
-			)
+			BeforeEach(func() {
+				gclient, err = smoke.NewGraphiteClient(
+					testConfig.Host,
+					testConfig.Port,
+					testConfig.Api,
+					protocol,
+					testPrefix,
+				)
 
-			if err != nil {
-				Fail(err.Error())
-			}
+				if err != nil {
+					Fail(err.Error())
+				}
+			})
+
+			AfterEach(func() {
+				err = gclient.Graphite.Disconnect()
+				if err != nil {
+					Fail(err.Error())
+				}
+	    		})
 
 			It("can be sent over udp and retrieved", func() {
 				runSendAndRetrieveTest(gclient, "udp.metric")
@@ -79,9 +98,9 @@ func runSendAndRetrieveTest(gclient *smoke.GraphiteClient, metricBase string) {
 		elapsed int
 	)
 
-	maxAttempts := 60
+	maxAttempts := 30
 	retryDelay := 10000
-	from := retryDelay / 1000
+	from := (retryDelay / 1000) * maxAttempts
 	found := false
 	value := strconv.FormatInt(time.Now().UnixNano() / int64(time.Millisecond), 10)
 	expectedOutput := fmt.Sprintf("datapoint: %s, for metric %s", value, metricBase)
@@ -95,21 +114,18 @@ func runSendAndRetrieveTest(gclient *smoke.GraphiteClient, metricBase string) {
 	Loop:
 		for j := 0; j < maxAttempts; j++ {
 			apiResponse, err = gclient.GetMetricFromGraphite(metricBase, from)
-			log.Printf("Response from the api server: %v\n", apiResponse)
-			log.Printf("Expected output: %s\n", expectedOutput)
 			if err != nil {
 				break Loop
 			}
 			for _, metric := range(apiResponse) {
 				for _, datapoint := range(metric.Datapoints) {
-					fmt.Printf("%v\n", datapoint)
 					if datapoint.Value() == value {
 						found = true
 						break Loop
 					}
 				}
-				log.Printf("%s not found in: %v\n", expectedOutput, apiResponse)
 			}
+			log.Printf("%s not found in: %v\n", expectedOutput, apiResponse)
 			time.Sleep(time.Duration(retryDelay) * time.Millisecond)
 			elapsed += retryDelay
 			log.Printf("Attempt #%d, sec elapsed: %d\n", j+1, elapsed/1000)
