@@ -3,16 +3,18 @@ package smoke
 import (
 	"encoding/json"
 	"os"
+	"log"
+	"fmt"
 )
 
 
 type Config struct {
 	Api 	string `json: "api"`
-	ApiPort int `json: "api_port"`
+	ApiPort int `json: "apiPort"`
 	Host	string `json: "host"`
 	Port      int `json: "port"`
-	TcpEnabled bool `json: "enable_tcp"`
-	UdpEnabled bool `json: "enable_udp"`
+	TcpEnabled bool `json: "tcpEnabled"`
+	UdpEnabled bool `json: "udpEnabled"`
 }
 
 var config *Config
@@ -27,8 +29,13 @@ func GetConfig() *Config {
 
 func loadConfig() *Config {
 	config := newDefaultConfig()
+	log.Printf("configuration %v\n", config)
+
 	loadConfigFromJson(config)
+
 	validateRequiredFields(config)
+	log.Printf("configuration %v\n", config)
+
 	return config
 }
 
@@ -39,7 +46,7 @@ func newDefaultConfig() *Config {
 		Host: "",
 		Port: 2003,
 		TcpEnabled: true,
-		UdpEnabled: true,
+		UdpEnabled: false,
 	}
 }
 
@@ -57,7 +64,7 @@ func validateRequiredFields(config *Config) {
 // Loads the config from json into the supplied config object
 func loadConfigFromJson(config *Config) {
 	path := configPath()
-
+	fmt.Println(path)
 	configFile, err := os.Open(path)
 	if err != nil {
 		panic(err)
@@ -65,6 +72,7 @@ func loadConfigFromJson(config *Config) {
 
 	decoder := json.NewDecoder(configFile)
 	err = decoder.Decode(config)
+
 	if err != nil {
 		panic(err)
 	}

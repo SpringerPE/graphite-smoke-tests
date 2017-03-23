@@ -13,11 +13,11 @@ create a new one with the following contents:
 ```
 {
     "api": "<graphite_api_endpoint>", #api.graphite.example
-    "api_port": 80 # (optional, default: 80)
+    "apiPort": 80 # (optional, default: 80)
     "host": "<graphite_host>", #graphite.host.example
     "port": 2003 # (optional, default: 80)
-    "enable_tcp": true,
-    "enable_udp": true
+    "tcpEnabled": true,
+    "udpEnabled": true
 }
 ```
 
