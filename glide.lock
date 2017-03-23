@@ -1,0 +1,46 @@
+hash: 3d239c557191347874daf33e0d889a37bf7f3a99b712cf41417bc5e9e2044420
+updated: 2017-03-23T16:02:00.531596731Z
+imports:
+- name: github.com/marpaia/graphite-golang
+  version: c474c9b821b4d0a4574edc6412b0003fbce233c4
+testImports:
+- name: github.com/onsi/ginkgo
+  version: 67b9df7f55fe1165fd9ad49aca7754cce01a42b8
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/containernode
+  - internal/failer
+  - internal/leafnodes
+  - internal/remote
+  - internal/spec
+  - internal/spec_iterator
+  - internal/specrunner
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - reporters/stenographer/support/go-colorable
+  - reporters/stenographer/support/go-isatty
+  - types
+- name: github.com/onsi/gomega
+  version: 4ac488ac94a6dfbd2f7e01cc3bea24e2efc40663
+  subpackages:
+  - format
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/oraclematcher
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
+- name: golang.org/x/sys
+  version: 8fd966b47dbdd4faa03de0d06e3d733baeb9a1a9
+  subpackages:
+  - unix
+- name: gopkg.in/yaml.v2
+  version: a3f3340b5840cee44f372bddb5880fcbc419b46a
