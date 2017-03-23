@@ -1,3 +1,4 @@
+
 package graphite
 
 import (
@@ -39,7 +40,7 @@ var _ = Describe("Graphite:", func() {
 			}
 
 			It("can be sent over tcp and retrieved", func() {
-				runSendAndRetrieveTest(gclient, protocol)
+				runSendAndRetrieveTest(gclient, "tcp.metric")
 			})
 		})
 	}
@@ -64,10 +65,7 @@ var _ = Describe("Graphite:", func() {
 			}
 
 			It("can be sent over udp and retrieved", func() {
-		    		if ! testConfig.UdpEnabled {
-		        			Skip("udp not enabled, skip test")
-		    		}
-				runSendAndRetrieveTest(gclient, protocol)
+				runSendAndRetrieveTest(gclient, "udp.metric")
 			})
 		})
 	}
@@ -86,18 +84,17 @@ func runSendAndRetrieveTest(gclient *smoke.GraphiteClient, metricBase string) {
 	from := retryDelay / 1000
 	found := false
 	value := strconv.FormatInt(time.Now().UnixNano() / int64(time.Millisecond), 10)
-	metricName := fmt.Sprintf("%s.%s", metricBase , value)
-	expectedOutput := fmt.Sprintf("datapoint: %s, for metric %s", value, metricName)
+	expectedOutput := fmt.Sprintf("datapoint: %s, for metric %s", value, metricBase)
 
 	//Start the test
-	err = gclient.SendMetricToGraphite(metricName, value)
+	err = gclient.SendMetricToGraphite(metricBase, value)
 	if err != nil {
 		Fail(fmt.Sprintf("Error while executing the test: %s\n", err.Error()))
 	}
 	elapsed = 0
 	Loop:
 		for j := 0; j < maxAttempts; j++ {
-			apiResponse, err = gclient.GetMetricFromGraphite(metricName, from)
+			apiResponse, err = gclient.GetMetricFromGraphite(metricBase, from)
 			log.Printf("Response from the api server: %v\n", apiResponse)
 			log.Printf("Expected output: %s\n", expectedOutput)
 			if err != nil {
