@@ -39,7 +39,7 @@ func newDefaultConfig() *Config {
 		Host: "",
 		Port: 2003,
 		TcpEnabled: true,
-		UdpEnabled: false,
+		UdpEnabled: true,
 	}
 }
 
