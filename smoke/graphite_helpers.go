@@ -12,7 +12,8 @@ import (
 )
 
 type GraphiteClient struct {
-	Api string
+	Api     string
+	ApiPort int
 	*graphite.Graphite
 }
 
@@ -39,13 +40,13 @@ func (d *Datapoint) Value() string {
 	return s
 }
 
-func NewGraphiteClient(host string, port int, apiHost string, protocol string, prefix string) (*GraphiteClient, error) {
+func NewGraphiteClient(host string, port int, apiHost string, apiPort int, protocol string, prefix string) (*GraphiteClient, error) {
 	var client *GraphiteClient
 	g, err := graphite.GraphiteFactory(protocol, host, port, prefix)
 	if err != nil {
 		return nil, err
 	}
-	client = &GraphiteClient{Api: apiHost, Graphite: g}
+	client = &GraphiteClient{Api: apiHost, ApiPort: apiPort, Graphite: g}
 	return client, nil
 }
 
@@ -61,7 +62,7 @@ func (client *GraphiteClient) SendMetricToGraphite(name string, value string) er
 func (client *GraphiteClient) GetMetricFromGraphite(name string, from int) (ApiResponse, error) {
 	httpClient := &http.Client{}
 
-	apiEndpoint := strings.Join([]string{"http://", client.Api, "/render"}, "")
+	apiEndpoint := fmt.Sprintf("http://%s:%d/render", client.Api, client.ApiPort)
 	req, err := http.NewRequest("GET", apiEndpoint, nil)
 	if err != nil {
 		log.Printf("Error while creating a new GET request for endpoint %s", apiEndpoint)
