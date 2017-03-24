@@ -1,14 +1,14 @@
 package smoke
 
 import (
-	"io/ioutil"
 	"encoding/json"
+	"fmt"
 	graphite "github.com/marpaia/graphite-golang"
-	"net/http"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"strconv"
 	"strings"
-	"fmt"
 )
 
 type GraphiteClient struct {
@@ -19,7 +19,7 @@ type GraphiteClient struct {
 type ApiResponse []ApiMetric
 
 type ApiMetric struct {
-	Target	string `json: "target"`
+	Target     string      `json: "target"`
 	Datapoints []Datapoint `json: "datapoints"`
 }
 
@@ -41,7 +41,7 @@ func (d *Datapoint) Value() string {
 
 func NewGraphiteClient(host string, port int, apiHost string, protocol string, prefix string) (*GraphiteClient, error) {
 	var client *GraphiteClient
-	g, err :=  graphite.GraphiteFactory(protocol, host, port, prefix)
+	g, err := graphite.GraphiteFactory(protocol, host, port, prefix)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func NewGraphiteClient(host string, port int, apiHost string, protocol string, p
 	return client, nil
 }
 
-func (client *GraphiteClient) SendMetricToGraphite(name string, value string) error{
+func (client *GraphiteClient) SendMetricToGraphite(name string, value string) error {
 
 	log.Printf("Loaded Graphite connection: %#v", client)
 	log.Printf("Original graphite client: %#v", client.Graphite)
@@ -74,11 +74,11 @@ func (client *GraphiteClient) GetMetricFromGraphite(name string, from int) (ApiR
 	q.Add("from", fmt.Sprintf("-%ds", from))
 	req.URL.RawQuery = q.Encode()
 	resp, err := httpClient.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		log.Printf("Error while attempting a request to %s endpoint", apiEndpoint)
 		return nil, err
 	}
+	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
