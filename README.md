@@ -3,6 +3,7 @@
 ## How to install this project
 ```
 go get github.com/SpringerPE/graphite-smoke-tests
+go get github.com/onsi/ginkgo/ginkgo
 ```
 
 ## How to run these tests
